@@ -2,6 +2,11 @@
   <v-container>
     <v-card>
       <v-card-title>create diary</v-card-title>
+      <div v-for="(value, key) of errors" :key="key">
+        <v-alert density="compact" type="warning" class="my-3">
+          {{ key + " : " + value.join(" / ") }}
+        </v-alert>
+      </div>
       <v-card-text>
         <v-text-field v-model="state.title" label="title"> </v-text-field>
         <v-textarea v-model="state.content" label="content"> </v-textarea>
@@ -14,7 +19,7 @@
 </template>
 <script lang="ts">
 import DiaryApiService from "@/services/DiaryApiService";
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
@@ -25,13 +30,15 @@ export default defineComponent({
       content: "",
       date: "",
     });
-
+    const errors = ref({});
     const handlePostDiary = async (): Promise<void> => {
       try {
         state.date = new Date().toISOString().split("T")[0];
         const res = await DiaryApiService.postDiary(state);
-        if (res.status === 200) {
+        if (res.data.status === 200) {
           router.push({ name: "top" });
+        } else {
+          errors.value = res.data.message;
         }
       } catch (err) {
         console.log(err);
@@ -40,6 +47,7 @@ export default defineComponent({
 
     return {
       state,
+      errors,
       handlePostDiary,
     };
   },

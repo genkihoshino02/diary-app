@@ -11,7 +11,7 @@ class DiariesController < ApplicationController
 
   def create
     diary = Diary.new(diary_params)
-    if diary.save!
+    if diary.save
       render json: {status: 200, message: "success"}
     else
       render json: {status: :unprocessable_entity, message: diary.errors}

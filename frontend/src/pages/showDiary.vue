@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <h1>Diary</h1>
+
     <v-btn variant="outlined" class="my-3" color="indigo-darken-3">
       <router-link to="/">TOP</router-link>
     </v-btn>
@@ -14,6 +15,11 @@
     </v-card>
     <v-card v-else class="mx-auto">
       <v-card-title>edit diary</v-card-title>
+      <div v-for="(value, key) of errors" :key="key">
+        <v-alert density="compact" type="warning" class="my-3">
+          {{ key + " : " + value.join(" / ") }}
+        </v-alert>
+      </div>
       <v-card-text>
         <v-text-field v-model="state.title" label="title"> </v-text-field>
         <v-textarea v-model="state.content" label="content"> </v-textarea>
@@ -53,13 +59,14 @@ export default defineComponent({
       content: "",
       date: "",
     });
+    const errors = ref({});
     const diary_id: string | undefined = route.query.diary_id as string;
     let isEditMode = ref(false);
     const handleGetDiary = async (): Promise<void> => {
       try {
         let id = parseInt(diary_id);
         const res = await DiaryApiService.getById(id);
-        if (res.status === 200) {
+        if (res.data.status === 200) {
           state.title = res.data.data.title;
           state.content = res.data.data.content;
           state.date = res.data.data.date;
@@ -73,9 +80,11 @@ export default defineComponent({
       try {
         let id = parseInt(diary_id);
         const res = await DiaryApiService.updateDiary(id, state);
-        if (res.status === 200) {
+        if (res.data.status === 200) {
           handleGetDiary();
           isEditMode.value = false;
+        } else {
+          errors.value = res.data.message;
         }
       } catch (err) {
         console.log(err);
@@ -86,7 +95,7 @@ export default defineComponent({
       try {
         let id = parseInt(diary_id);
         const res = await DiaryApiService.deleteDiary(id);
-        if (res.status === 200) {
+        if (res.data.status === 200) {
           router.push({ name: "top" });
         }
       } catch (err) {
@@ -104,6 +113,7 @@ export default defineComponent({
     return {
       state,
       diary_id,
+      errors,
       isEditMode,
       handleEditDiary,
       onEditMode,
