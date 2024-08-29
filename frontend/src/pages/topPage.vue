@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h1>My Diary</h1>
+    <vue-header />
     <v-btn variant="outlined" class="my-3" color="indigo-darken-3">
       <router-link to="/create">CREATE NEW DIARY</router-link>
     </v-btn>
@@ -26,12 +26,13 @@
 import DiaryApiService from "@/services/DiaryApiService";
 import { defineComponent, onMounted, reactive } from "vue";
 import { Diary } from "@/interfaces/index";
-
+import VueHeader from "@/components/VueHeader.vue";
 interface State {
   diaries: Diary[];
 }
 
 export default defineComponent({
+  components: { VueHeader },
   setup() {
     const state = reactive<State>({
       diaries: [],
@@ -69,5 +70,3 @@ export default defineComponent({
   margin-top: 60px;
 }
 </style>
-
-function handleGetDiaries() { throw new Error("Function not implemented."); }

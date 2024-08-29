@@ -1,6 +1,8 @@
 class DiariesController < ApplicationController
+  before_action :authenticate_user!
   def index
-    render json: {status: 200, data: Diary.all, message: "success"}
+    diaries = Diary.where(user_id: current_user.id)
+    render json: {status: 200, data: diaries, message: "success"}
   end
 
   def show 
@@ -10,7 +12,7 @@ class DiariesController < ApplicationController
   end
 
   def create
-    diary = Diary.new(diary_params)
+    diary = current_user.diaries.build(diary_params)
     if diary.save
       render json: {status: 200, message: "success"}
     else
@@ -39,6 +41,6 @@ class DiariesController < ApplicationController
 
   private
     def diary_params
-      params.require(:diary).permit(:title, :content, :date)
+      params.permit(:title, :content, :date).merge(user: current_user)
     end
 end

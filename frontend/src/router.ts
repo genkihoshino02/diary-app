@@ -1,9 +1,15 @@
 import * as VueRouter from "vue-router";
+import LoginForm from "./pages/LoginForm.vue";
 import createDiary from "./pages/createDiary.vue";
 import TopPage from "./pages/topPage.vue";
 import ShowDiary from "./pages/showDiary.vue";
 
 const routes: VueRouter.RouteRecordRaw[] = [
+  {
+    path: "/login",
+    name: "login",
+    component: () => LoginForm,
+  },
   {
     path: "/",
     name: "top",
