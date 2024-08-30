@@ -1,9 +1,9 @@
 <template>
   <v-component>
     <h2>LOGIN</h2>
-    <div v-for="(value, key) of errors" :key="key">
+    <div v-for="error in errors" :key="error">
       <v-alert density="compact" type="warning" class="my-3">
-        {{ key + " : " + value.join(" / ") }}
+        {{ error }}
       </v-alert>
     </div>
     <v-sheet class="mx-auto" width="500">
@@ -35,7 +35,7 @@ export default defineComponent({
       password: "",
     });
     const router = useRouter();
-    const errors = ref({});
+    const errors = ref([]);
     const handleLogin = async (): Promise<void> => {
       try {
         const res = await ClientApiService.login(formData);
@@ -51,11 +51,12 @@ export default defineComponent({
           };
           setAuthDataFromResponse(authHeaders);
           router.push({ name: "top" });
-        } else {
-          errors.value = res.data;
         }
-      } catch (err) {
-        console.log(err);
+      } catch (err: any) {
+        console.log(err.response.data.errors);
+        errors.value = Array.isArray(err.response.data.errors)
+          ? err.response.data.errors
+          : [err.response.data.errors];
       }
     };
     return {
