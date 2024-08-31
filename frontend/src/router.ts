@@ -1,4 +1,5 @@
 import * as VueRouter from "vue-router";
+import SignupForm from "./pages/SignupForm.vue";
 import LoginForm from "./pages/LoginForm.vue";
 import createDiary from "./pages/createDiary.vue";
 import TopPage from "./pages/topPage.vue";
@@ -10,6 +11,11 @@ const routes: VueRouter.RouteRecordRaw[] = [
     path: "/login",
     name: "login",
     component: () => LoginForm,
+  },
+  {
+    path: "/signup",
+    name: "sign_up",
+    component: () => SignupForm,
   },
   {
     path: "/",
